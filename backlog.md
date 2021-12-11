@@ -2,10 +2,13 @@
 
 ## 10/12/2021
 
-- essayer comprendre et exécuter [l'implem de Charity](https://github.com/mietek/charity-lang)
+- essayer de comprendre et exécuter [l'implem de Charity](https://github.com/mietek/charity-lang)
 
+Lecture -> *Hugino: A Categorical Programming Language*
 - [x] background: Algebraic Specification Methods
-
+- [x] category theory
+- [x] CDT
+- [ ] pas compris: the product functor is the right adjoint of the diagonal functor.(page 9-10)
 ### **Concepts**
 
 #### ***1. Category***
@@ -43,3 +46,23 @@ Functor F : C → D
 - X in C => F(X) in D
 - f: X → Y, F(f): F(X) → F(Y) et F(g . f) = F(g) . F(f)
 - Contravariance; F(f): F(Y) → F(X)
+
+#### ***6. Exponential***
+pour les ensemble:  
+B^A: ensemble des fonctions de A dans B   
+f : A -> B,  
+eval (f,x) = f(x)
+
+### Category <-> Langages de Programmation
+Liens:
+
+1) Example de typage de somme
+A + B est défini avec 
+i1: A → A + B et i2: B → A + B
+et donc le type de (A+B) peut être obtenu a partir du type de i1 et i2.
+comme pour l'addition
+
+2) left adj nat with pr(,)
+zero: 1 → nat  
+succ: nat → nat   
+`add = eval . <pr(curry(p2), curry(succ . eval)) . p1, p2>`  
