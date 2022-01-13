@@ -66,3 +66,9 @@ comme pour l'addition
 zero: 1 → nat  
 succ: nat → nat   
 `add = eval . <pr(curry(p2), curry(succ . eval)) . p1, p2>`  
+
+## Parsing
+
+
+### Ocamllex + Menhir
+tuto: [mukulrathi](https://mukulrathi.com/create-your-own-programming-language)
