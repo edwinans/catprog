@@ -1,6 +1,5 @@
 (* Abstract Syntax Tree *)
 
-
 type term =
   | Int of int
   | Str of string
@@ -18,5 +17,6 @@ type term =
 type datatype =
   | Unit_Type
   | Init_Type of string * datatype option * (string * datatype list) list
+
 (* type name, optional type variable, value constructors *)
 (* | Final_Type of  *)

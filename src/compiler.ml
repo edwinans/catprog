@@ -1,5 +1,5 @@
 open Printf 
-open AST
+open Ast
 
 module Env = Map.Make(String) 
 
@@ -22,9 +22,9 @@ let rec str_of_term = function
     | _ -> ""
 
 let compile t = match t with 
-    | Int n -> printf "%s\n" (str_of_term t)
-    | Str s -> printf "%s\n" (str_of_term t)
-    | Var s -> printf "%s\n" (str_of_term t)
+    | Int _ -> printf "%s\n" (str_of_term t)
+    | Str _ -> printf "%s\n" (str_of_term t)
+    | Var _ -> printf "%s\n" (str_of_term t)
     | C(_, _) -> printf "(%s)\n" (str_of_term t)
     | App(_, _) -> printf "(%s)\n" (str_of_term t)
     | Abs(_, _) -> printf "(%s)\n" (str_of_term t)
