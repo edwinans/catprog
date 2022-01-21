@@ -1,11 +1,6 @@
-(*
-  Cours "Typage et Analyse Statique" - Master STL
-  Sorbonne Université
-  Antoine Miné 2015-2018
-*)
 
 (*
-  Lexer for a very simple C-like "curly bracket" language.
+  Lexer for a Charity-like language.
 *)
     
 {
