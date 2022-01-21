@@ -1,7 +1,9 @@
 (library
  (name parsing)
  (public_name parsing)
- (libraries ast)
+ (libraries core ast)
+  (preprocess
+  (pps bisect_ppx --conditional))
  (lint
   (pps ppx_js_style -annotated-ignores -styler -pretty -dated-deprecation)))
 

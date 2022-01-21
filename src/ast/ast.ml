@@ -1,5 +1,12 @@
-(* Abstract Syntax Tree *)
-open Lexing 
+
+
+(* 
+   Definition of the abstract syntax trees output by the parser.
+*)
+
+
+(* open Lexing *)
+
 
 (* position in the source file, we use ocamllex's default type *)
 type position = Lexing.position
@@ -17,120 +24,94 @@ let extent_unknown = (position_unknown, position_unknown)
  *)
 type 'a ext = 'a * extent
 
-
-type bool_unary_op =
-  | NEG  
-
-type int_unary_op = 
-  | UNARY_PLUS     (* +e *)
-  | UNARY_MINUS    (* -e *)
-
-type int_binary_op =
-  | PLUS          (* e + e *)
-  | MINUS         (* e - e *)
-  | MULTIPLY      (* e * e *)
-  | DIVIDE        (* e / e *)
-
-type bool_binary_op =
-  | AND           (* e && e *)
-  | OR            (* e || e *)
-  | XOR           (* e xor e *)
-
-type str_binary_op =
-  | STRCAT        
-
-type list_binary_op = 
-  | LISTCONS
-  | RANGE
-
-type int_expr = 
-  (* unary operation *)
-  | Int_unary of int_unary_op * (int_expr ext)
-
-  (* binary operation *)
-  | Int_binary of int_binary_op * (int_expr ext) * (int_expr ext)
-
-  (* constants (integers are still in their string representation) *)
-  | Int_const of string ext
-
-type compare_op =
-  | EQUAL         (* e = e *)
-  | EQV           (* e == e *)
-  | NEQV          (* e <> e *)
-  | LT            (* e < e *)
-  | LE            (* e <= e *)
-  | GT            (* e > e *)
-  | GE            (* e >= e *)
-
-type bool_expr = 
-  (* unary operation *)
-  | Bool_unary of bool_unary_op * (bool_expr ext)
-
-  (* binary operation *)
-  | Bool_binary of bool_binary_op * (bool_expr ext) * (bool_expr ext)
-  | Compare of compare_op * (int_expr ext) * (int_expr ext)
-
-  (* constants *)
-  | Bool_const of bool
-    
-
-
+(* variable identifiers, just strings *)
+(* local variables and scoping would require using UNIQUE IDENTIFIERS
+   to handle the case where several variables have the same name
+ *)
 type var = string
 
 
 (* types: only integers (mathematical integers, in Z) *)
-type typ = INT      
+type typ = AST_INT      
 
 
-type stat =
+(* unary expression operators *)
 
-  (* block of statements { declarations; statements;  } *)
-  | AST_block of (((int * var) ext) list) * ((stat ext) list)
+type int_unary_op = 
+  | AST_UNARY_PLUS     (* +e *)
+  | AST_UNARY_MINUS    (* -e *)
 
-  (* assignment of integer expression: var = expr *)
-  | AST_assign of (var ext) * (int_expr ext)
-
-  (* if-then-else, with boolean condition;
-     the else branch is optional 
-   *)
-  | AST_if of (bool_expr ext) (* condition *) * 
-              (stat ext) (* then branch *) * 
-              (stat ext option) (* optional else *)
-
-  (* while loop, with boolean condition *)
-  | AST_while of (bool_expr ext) (* condition *) * 
-                 (stat ext) (* body *)
-
-  (* program exit *)
-  | AST_HALT
-
-  (* assertion: exit if the boolean expression does not hold *)
-  | AST_assert of bool_expr ext
-
-  (* prints the value of some or all variables *)
-  | AST_print of (var ext) list
-  | AST_PRINT_ALL
+type bool_unary_op =
+  | AST_NOT            (* !e logical negation *)
 
 
-type term =
-  | Int of int
+(* binary expression operators *)
+
+type int_binary_op =
+  | AST_PLUS          (* e + e *)
+  | AST_MINUS         (* e - e *)
+  | AST_MULTIPLY      (* e * e *)
+  | AST_DIVIDE        (* e / e *)
+
+type compare_op =
+  | AST_EQUAL         (* e == e *)
+  | AST_NOT_EQUAL     (* e != e *)
+  | AST_LESS          (* e < e *)
+  | AST_LESS_EQUAL    (* e <= e *)
+  | AST_GREATER       (* e > e *)
+  | AST_GREATER_EQUAL (* e >= e *)
+
+type bool_binary_op =
+  | AST_AND           (* e && e *)
+  | AST_OR            (* e || e *)
+
+
+(* expressions *)
+
+type int_expr = 
+  (* unary operation *)
+  | AST_int_unary of int_unary_op * (int_expr ext)
+
+  (* binary operation *)
+  | AST_int_binary of int_binary_op * (int_expr ext) * (int_expr ext)
+
+  (* variable use *)
+  | AST_identifier of var ext
+
+  (* constants (integers are still in their string representation) *)
+  | AST_int_const of string ext
+
+
+
+type bool_expr =
+  (* unary operation *)
+  | AST_bool_unary of bool_unary_op * (bool_expr ext)
+
+  (* binary operation *)
+  | AST_bool_binary of bool_binary_op * (bool_expr ext) * (bool_expr ext)
+  | AST_compare of compare_op * (int_expr ext) * (int_expr ext)
+
+  (* constants *)
+  | AST_bool_const of bool
+
+type expr =
   | Str of string
   | Var of string
   | Unit
   | Null
-  | C of string * term list (* for value contructors*)
-  | App of term * term
-  | Abs of string * term
-  | Case of term * (term * term) list
-  | Map of term * (term * term) list
-  | Fold of term * (term * term) list
-  | Unfold of term * (term * term) list
+  | C of string * expr list (* for value contructors*)
+  | App of expr * expr
+  | Abs of string * expr
+  | Case of expr * (expr * expr) list
+  | Map of expr * (expr * expr) list
+  | Fold of expr * (expr * expr) list
+  | Unfold of expr * (expr * expr) list
 
-type datatype =
-  | Unit_Type
-  | Init_Type of string * datatype option * (string * datatype list) list
+type def = data_def
+(* L(A) -> S*)
+type data_name = string * string option * string
+type data_def = Init_Type of data_name * (string * string list * string) list
 
-(* type name, optional type variable, value constructors *)
-(* | Final_Type of  *)
-
+        
+(* a program is a list of statements *)
 type prog = stat ext list
